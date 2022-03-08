@@ -1,4 +1,5 @@
 from importlib.abc import Loader
+import threading
 import yaml
 from threading import *
 import datetime
@@ -29,7 +30,8 @@ data = data['M2A_Workflow']
 txt = "M2A_Workflow"
 
 tasks = []
-dict = {}
+dt = {}
+
 
 def find_task(txt,data):
     entryLog(txt + " Entry ")
@@ -40,52 +42,57 @@ def find_task(txt,data):
             for k, v in activities.items():
                 find_task(txt + "." + k ,v)
         elif execution == 'Concurrent':
-            thread_items = []
-            for k, v in activities.items():
-                t = Thread(target=find_task, args=(txt + "." + k ,v,))
-                thread_items.append(t)
-            for t in thread_items:
+            threads = []
+            for k, value in activities.items():
+                if 'Condition' in value:
+                    cond = value['Condition'].split(' ')
+                    key = cond[0]
+                    val = cond[2]
+                    key1 = int(dt[key])
+                    val1 = int(val)
+                    # print(v1, v2)
+                    if cond[1] == '>' and key1 <= val1:
+                        entryLog(txt + "." + k + " Entry")
+                        entryLog(txt + "." + k + " Skipped")
+                        entryLog(txt + "." + k + " Exit")
+                        continue
+                    elif cond[1] == '<' and key1 >= val1:
+                        entryLog(txt + "." + k + " Entry")
+                        entryLog(txt + "." + k + " Skipped")
+                        entryLog(txt + "." + k + " Exit")
+                        continue
+                # find_task(txt + "." + k ,v)
+                t = Thread(target=find_task, args=(txt + "." + k ,value,))
+                threads.append(t)
+            for t in threads:
+                # threading.Lock().acquire()
                 t.start()
-            for t in thread_items:
+                time.sleep(1)
+                # threading.Lock().release()
+            for t in threads:
                 t.join()
     elif data['Type'] == 'Task':
         func = data['Function']
-        if "Condition" in data:
-            cond = data['Condition'].split(' ')
-            k = cond[0]
-            val = cond[2]
-            
-            if cond[1] == '<' and int(dict[k]) >= int(val):
-                entryLog(txt+" Skipped")
-                return
-            elif cond[1]=='>' and int(dict[k])<=int(val):
-                entryLog(txt+" Skipped")
-                return
-                
-
-            
         if func == "TimeFunction":
             finput = data['Inputs']['FunctionInput']
             exe_time = data['Inputs']['ExecutionTime']
-            # for key,val in dict.items():
-            #     print(key)
-            # print(val)
-            print(txt)
-            entryLog(txt + " Executing " + str(func) + " (" + str(finput) + ", " + str(exe_time) + ")")
+            if finput in dt:
+                entryLog(txt + " Executing " + str(func) + " (" + str(dt[finput]) + ", " + str(exe_time) + ")")
+            else:
+                entryLog(txt + " Executing " + str(func) + " (" + str(finput) + ", " + str(exe_time) + ")")
             time.sleep(int(exe_time))
         elif func == "DataLoad":
             fname = data['Inputs']['Filename']
             filepath = "DataSet/Milestone2/" + fname
+            entryLog(txt + " Executing " + str(func)+" ("+fname+")")
             with open(filepath,"r")as f:
                 csvdata = csv.reader(f)
-                nofdefect = 0
+                noOfdefect = 0
                 for data in csvdata:
-                    nofdefect += 1
+                    noOfdefect += 1
                 key = "$(" + txt + ".NoOfDefects" + ")"
-                dict[key] = nofdefect
-                print(key)
-            entryLog(txt + " Executing " + str(func)+" ("+fname+")")
-            # time.sleep(int(exe_time))
+                dt[key] = noOfdefect
+                print(key, noOfdefect)
         tasks.append(data)
     entryLog(txt + " Exit")
 
