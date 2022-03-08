@@ -1,19 +1,18 @@
-from ctypes.wintypes import tagMSG
-import yaml
-import datetime
-from yaml import Loader
 from importlib.abc import Loader
-import threading
+import yaml
+from threading import *
+import datetime
 import time
 import csv
 
-file = "DataSet/Milestone2/Milestone2A.yaml"
 
+def TimeFunction(seconds):
+    time.sleep(seconds)
 
-def entryLog(k):
+def entry_log(k):
     with open("Milestone2a_log.txt", 'a') as write_log:
         t = datetime.datetime.now()
-        write_log.write(str(t) +";"+ str(k))
+        write_log.write(str(t) + ";" + str(k))
         write_log.write('\n')
         write_log.close()
         
@@ -23,30 +22,18 @@ def load_data(path):
         data = yaml.load(file_read, Loader=yaml.FullLoader)
         return data
     
+file = "DataSet/Milestone2/Milestone2A.yaml"
+
 data = load_data(file)
-
-
 data = data['M2A_Workflow']
 
 txt = "M2A_Workflow"
 
 tasks = []
-
-noDefects=[]
-
-
-def load_csv(filename):
-    with open(filename,"r")as f:
-        datas = csv.reader(f)
-        # print(datas)
-        noDefects.append(len(list(datas)))
-        for data in datas:
-            print(data)
-            # noOfDefects+=1
-
+dict = {}
 
 def find_task(txt,data):
-    entryLog(txt + " Entry ")
+    entry_log(txt + " Entry ")
     if data['Type'] == 'Flow':
         execution = data['Execution']
         activities = data['Activities']
@@ -56,60 +43,45 @@ def find_task(txt,data):
         elif execution == 'Concurrent':
             thread_items = []
             for k, v in activities.items():
-                t = threading.Thread(target=find_task, args=(txt + "." + k ,v,))
+                t = Thread(target=find_task, args=(txt + "." + k ,v,))
                 thread_items.append(t)
             for t in thread_items:
                 t.start()
             for t in thread_items:
                 t.join()
-        entryLog(txt + " Exit")
     elif data['Type'] == 'Task':
-        func_name = data['Function']
-        if func_name=='DataLoad':
-            filename = data['Inputs']['Filename']
-            load_csv('./DataSet/Milestone2/'+filename)
-            entryLog(txt + " Executing " + str(func_name) + " ("+ filename+")")
-        elif func_name=='TimeFunction':
-            con=''
-            if len(data)>3:
-                con = data['Condition']
-            finput = data['Inputs']['FunctionInput']
-            exe_time = data['Inputs']['ExecutionTime']
-            if con=='':
-                entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
-                tasks.append(data)
-                time.sleep(int(exe_time))
-                entryLog(txt + " Exit")
-            else:
-                if con=="$(M2A_Workflow.TaskA.NoOfDefects) > 4":
-                    if noDefects[0]>4:
-                        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
-                        tasks.append(data)
-                        time.sleep(int(exe_time))
-                        entryLog(txt + " Exit")
-                else:
-                    if noDefects[1]<6:
-                        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
-                        tasks.append(data)
-                        time.sleep(int(exe_time))
-                        entryLog(txt + " Exit")
-
-                    
+        func = data['Function']
+        if "Condition" in data:
+            cond = data['Condition'].split(' ')
+            key = cond[0]
+            val = cond[2]
+            if cond[1] == '<' and int(dict[key]) >= int(val):
+                entry_log(txt+" Skipped")
+                
+            elif cond[1]=='>' and int(dict[key])<=int(val):
+                entry_log(txt+" Skipped")
+                pass
             
-    
-    
-    
+        if func == "TimeFunction":
+            finput = data['Inputs']['FunctionInput']
+            ftime = data['Inputs']['ExecutionTime']
+            entry_log(txt + " Executing " + str(func) + " (" + str(finput) + ", " + str(ftime) + ")")
+            TimeFunction(int(ftime))
+        elif func == "DataLoad":
+            fname = data['Inputs']['Filename']
+            filepath = "DataSet/Milestone2/" + fname
+            with open(filepath,"r")as f:
+                csvdata = csv.reader(f)
+                nofdefect = 0
+                for data in csvdata:
+                    nofdefect += 1
+                key = "$(" + txt + ".NoOfDefects" + ")"
+                dict[key] = nofdefect
+        tasks.append(data)
+        entry_log(txt + " Exit")
 
-find_task(txt,data)
 
+find_task(txt, data)
+
+# print(dict)
 # print(tasks)
-
-# t1 = threading.Thread(target=find_task, args=(txt,data,))
-# t2 = threading.Thread(target=find_task,args=(txt,data,))
-
-# t1.start()
-# time.sleep(0.5)
-# t2.start()
-
-# t1.join()
-# t2.join()

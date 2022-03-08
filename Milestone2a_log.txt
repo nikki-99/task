@@ -1,20 +1,23 @@
-2022-03-08 13:08:51.043590;M2A_Workflow Entry 
-2022-03-08 13:08:51.044590;M2A_Workflow.TaskA Entry 
-2022-03-08 13:08:51.045591;M2A_Workflow.TaskA Executing DataLoad (Milestone2A_DataInput1.csv)
-2022-03-08 13:08:51.045591;M2A_Workflow.TaskB Entry 
-2022-03-08 13:08:51.045591;M2A_Workflow.TaskB Executing TimeFunction (TaskB_Input, 2) 
-2022-03-08 13:08:53.056825;M2A_Workflow.TaskB Exit
-2022-03-08 13:08:53.057608;M2A_Workflow.FlowA Entry 
-2022-03-08 13:08:53.058589;M2A_Workflow.FlowA.TaskC Entry 
-2022-03-08 13:08:53.058589;M2A_Workflow.FlowA.TaskD Entry 
-2022-03-08 13:08:53.059571;M2A_Workflow.FlowA.FlowB Entry 
-2022-03-08 13:08:53.059571;M2A_Workflow.FlowA.TaskD Executing TimeFunction (TaskD_Input, 2) 
-2022-03-08 13:08:53.060569;M2A_Workflow.FlowA.TaskC Executing DataLoad (Milestone2A_DataInput2.csv)
-2022-03-08 13:08:53.061570;M2A_Workflow.FlowA.FlowB.TaskE Entry 
-2022-03-08 13:08:53.061570;M2A_Workflow.FlowA.FlowB.TaskF Entry 
-2022-03-08 13:08:53.062568;M2A_Workflow.FlowA.FlowB.TaskF Executing TimeFunction (TaskF_Input, 2) 
-2022-03-08 13:08:55.065168;M2A_Workflow.FlowA.FlowB.TaskF Exit
-2022-03-08 13:08:55.065168;M2A_Workflow.FlowA.TaskD Exit
-2022-03-08 13:08:55.066169;M2A_Workflow.FlowA.FlowB Exit
-2022-03-08 13:08:55.067608;M2A_Workflow.FlowA Exit
-2022-03-08 13:08:55.068522;M2A_Workflow Exit
+2022-03-08 13:59:44.489100;M2A_Workflow.FlowA.FlowB.TaskF Exit
+2022-03-08 13:59:44.489100;M2A_Workflow.FlowA.TaskD Exit
+2022-03-08 13:59:44.489100;M2A_Workflow.FlowA.FlowB.TaskE Exit
+2022-03-08 13:59:46.382862;M2A_Workflow Entry 
+2022-03-08 13:59:46.383982;M2A_Workflow.TaskA Entry 
+2022-03-08 13:59:46.384859;M2A_Workflow.TaskA Exit
+2022-03-08 13:59:46.384859;M2A_Workflow.TaskB Entry 
+2022-03-08 13:59:46.385870;M2A_Workflow.TaskB Executing TimeFunction (TaskB_Input, 2)
+2022-03-08 13:59:48.393936;M2A_Workflow.TaskB Exit
+2022-03-08 13:59:48.394748;M2A_Workflow.FlowA Entry 
+2022-03-08 13:59:48.400758;M2A_Workflow.FlowA.TaskC Entry 
+2022-03-08 13:59:48.401747;M2A_Workflow.FlowA.TaskD Entry 
+2022-03-08 13:59:48.401747;M2A_Workflow.FlowA.FlowB Entry 
+2022-03-08 13:59:48.401747;M2A_Workflow.FlowA.TaskD Executing TimeFunction (TaskD_Input, 2)
+2022-03-08 13:59:48.402923;M2A_Workflow.FlowA.TaskC Exit
+2022-03-08 13:59:48.402923;M2A_Workflow.FlowA.FlowB.TaskE Entry 
+2022-03-08 13:59:48.402923;M2A_Workflow.FlowA.FlowB.TaskF Entry 
+2022-03-08 13:59:48.403747;M2A_Workflow.FlowA.FlowB.TaskE Skipped
+2022-03-08 13:59:48.403747;M2A_Workflow.FlowA.FlowB.TaskF Executing TimeFunction (TaskF_Input, 2)
+2022-03-08 13:59:48.404750;M2A_Workflow.FlowA.FlowB.TaskE Executing TimeFunction (TaskE_Input, 2)
+2022-03-08 13:59:50.406646;M2A_Workflow.FlowA.TaskD Exit
+2022-03-08 13:59:50.406646;M2A_Workflow.FlowA.FlowB.TaskF Exit
+2022-03-08 13:59:50.407678;M2A_Workflow.FlowA.FlowB.TaskE Exit
