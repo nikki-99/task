@@ -12,7 +12,7 @@ file = "DataSet/Milestone1/Milestone1A.yaml"
 def entryLog(k):
     with open("Milestone1_log.txt", 'a') as write_log:
         t = datetime.datetime.now()
-        write_log.write(str(t) + " " + str(k))
+        write_log.write(str(t) +";"+ str(k))
         write_log.write('\n')
         write_log.close()
         
@@ -47,7 +47,7 @@ def find_task(txt,data):
         func_name = data['Function']
         func_input = data['Inputs']['FunctionInput']
         exe_time = data['Inputs']['ExecutionTime']
-        entryLog(txt + " Executing " + str(func_name) + " ("+ str(func_input)+ ", "+str(exe_time)+" )")
+        entryLog(txt + " Executing " + str(func_name) + " ("+ str(func_input)+ ", "+str(exe_time)+")")
         entryLog(txt +  " Exit ")
         tasks.append(data)
     
