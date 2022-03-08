@@ -6,11 +6,11 @@ from importlib.abc import Loader
 import threading
 import time
 
-file = "DataSet/Milestone1/Milestone1B.yaml"
+file = "DataSet/Milestone2/Milestone2A.yaml"
 
 
 def entryLog(k):
-    with open("Milestone1b_log.txt", 'a') as write_log:
+    with open("Milestone2a_log.txt", 'a') as write_log:
         t = datetime.datetime.now()
         write_log.write(str(t) +";"+ str(k))
         write_log.write('\n')
@@ -25,9 +25,9 @@ def load_data(path):
 data = load_data(file)
 
 
-data = data['M1B_Workflow']
+data = data['M2A_Workflow']
 
-txt = "M1B_Workflow"
+txt = "M2A_Workflow"
 
 tasks = []
 
@@ -37,33 +37,33 @@ def find_task(txt,data):
         execution = data['Execution']
         activities = data['Activities']
         if execution == 'Sequential':
-            for k, val in activities.items():
-                find_task(txt + "." + k ,val)
+            for k, v in activities.items():
+                find_task(txt + "." + k ,v)
         elif execution == 'Concurrent':
-            threads = []
-            for k, val in activities.items():
-                t = threading.Thread(target=find_task, args=(txt + "." + k ,val,))
-                threads.append(t)
-            for t in threads:
+            thread_items = []
+            for k, v in activities.items():
+                t = threading.Thread(target=find_task, args=(txt + "." + k ,v,))
+                thread_items.append(t)
+            for t in thread_items:
                 t.start()
-            for t in threads:
+            for t in thread_items:
                 t.join()
-        entryLog(txt +  " Exit ")
+        entryLog(txt + " Exit")
     elif data['Type'] == 'Task':
         func_name = data['Function']
-        func_input = data['Inputs']['FunctionInput']
+        finput = data['Inputs']['FunctionInput']
         exe_time = data['Inputs']['ExecutionTime']
-        entryLog(txt + " Executing " + str(func_name) + " ("+ str(func_input)+ ", "+str(exe_time)+")")
-        entryLog(txt +  " Exit ")
+        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
         tasks.append(data)
+        entryLog(txt + " Exit")
     
     
     
 
 find_task(txt,data)
 
-# print(tasks)
-# if __name__ =='__main__':
+print(tasks)
+
 # t1 = threading.Thread(target=find_task, args=(txt,data,))
 # t2 = threading.Thread(target=find_task,args=(txt,data,))
 
