@@ -32,12 +32,17 @@ txt = "M2A_Workflow"
 
 tasks = []
 
+noDefects=[]
+
+
 def load_csv(filename):
     with open(filename,"r")as f:
         datas = csv.reader(f)
-        print(datas)
+        # print(datas)
+        noDefects.append(len(list(datas)))
         for data in datas:
             print(data)
+            # noOfDefects+=1
 
 
 def find_task(txt,data):
@@ -63,17 +68,34 @@ def find_task(txt,data):
         if func_name=='DataLoad':
             filename = data['Inputs']['Filename']
             load_csv('./DataSet/Milestone2/'+filename)
+            entryLog(txt + " Executing " + str(func_name) + " ("+ filename+")")
         elif func_name=='TimeFunction':
             con=''
             if len(data)>3:
                 con = data['Condition']
             finput = data['Inputs']['FunctionInput']
             exe_time = data['Inputs']['ExecutionTime']
+            if con=='':
+                entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
+                tasks.append(data)
+                time.sleep(int(exe_time))
+                entryLog(txt + " Exit")
+            else:
+                if con=="$(M2A_Workflow.TaskA.NoOfDefects) > 4":
+                    if noDefects[0]>4:
+                        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
+                        tasks.append(data)
+                        time.sleep(int(exe_time))
+                        entryLog(txt + " Exit")
+                else:
+                    if noDefects[1]<6:
+                        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
+                        tasks.append(data)
+                        time.sleep(int(exe_time))
+                        entryLog(txt + " Exit")
 
-            entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
-            tasks.append(data)
-            time.sleep(int(exe_time))
-            entryLog(txt + " Exit")
+                    
+            
     
     
     
