@@ -5,6 +5,7 @@ from yaml import Loader
 from importlib.abc import Loader
 import threading
 import time
+import csv
 
 file = "DataSet/Milestone2/Milestone2A.yaml"
 
@@ -31,6 +32,14 @@ txt = "M2A_Workflow"
 
 tasks = []
 
+def load_csv(filename):
+    with open(filename,"r")as f:
+        datas = csv.reader(f)
+        print(datas)
+        for data in datas:
+            print(data)
+
+
 def find_task(txt,data):
     entryLog(txt + " Entry ")
     if data['Type'] == 'Flow':
@@ -51,18 +60,27 @@ def find_task(txt,data):
         entryLog(txt + " Exit")
     elif data['Type'] == 'Task':
         func_name = data['Function']
-        finput = data['Inputs']['FunctionInput']
-        exe_time = data['Inputs']['ExecutionTime']
-        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
-        tasks.append(data)
-        entryLog(txt + " Exit")
+        if func_name=='DataLoad':
+            filename = data['Inputs']['Filename']
+            load_csv('./DataSet/Milestone2/'+filename)
+        elif func_name=='TimeFunction':
+            con=''
+            if len(data)>3:
+                con = data['Condition']
+            finput = data['Inputs']['FunctionInput']
+            exe_time = data['Inputs']['ExecutionTime']
+
+            entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
+            tasks.append(data)
+            time.sleep(int(exe_time))
+            entryLog(txt + " Exit")
     
     
     
 
 find_task(txt,data)
 
-print(tasks)
+# print(tasks)
 
 # t1 = threading.Thread(target=find_task, args=(txt,data,))
 # t2 = threading.Thread(target=find_task,args=(txt,data,))

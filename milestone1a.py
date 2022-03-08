@@ -46,6 +46,7 @@ def find_task(txt,data):
                 thread_items.append(t)
             for t in thread_items:
                 t.start()
+                # time.sleep()
             for t in thread_items:
                 t.join()
         entryLog(txt + " Exit")
@@ -55,6 +56,7 @@ def find_task(txt,data):
         exe_time = data['Inputs']['ExecutionTime']
         entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
         tasks.append(data)
+        time.sleep(int(exe_time))
         entryLog(txt + " Exit")
     
     
