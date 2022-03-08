@@ -10,7 +10,7 @@ file = "DataSet/Milestone1/Milestone1B.yaml"
 
 
 def entryLog(k):
-    with open("Milestone2_log.txt", 'a') as write_log:
+    with open("Milestone1b_log.txt", 'a') as write_log:
         t = datetime.datetime.now()
         write_log.write(str(t) +";"+ str(k))
         write_log.write('\n')
@@ -36,13 +36,19 @@ def find_task(txt,data):
     if data['Type'] == 'Flow':
         execution = data['Execution']
         activities = data['Activities']
-        for k, v in activities.items():
-            if not v['Type']=='Task':
-                entryLog(txt + "." + k + " Entry ")
-                # entryLog(txt +  " Exit ")
-            
-            # if k.find('Task'):
-            find_task(txt +"."+k,v)
+        if execution == 'Sequential':
+            for k, v in activities.items():
+                find_task(txt + "." + k ,v)
+        elif execution == 'Concurrent':
+            threads = []
+            for k, v in activities.items():
+                t = threading.Thread(target=find_task, args=(txt + "." + k ,v,))
+                threads.append(t)
+            for t in threads:
+                t.start()
+            for t in threads:
+                t.join()
+        entryLog(txt +  " Exit ")
     elif data['Type'] == 'Task':
         func_name = data['Function']
         func_input = data['Inputs']['FunctionInput']
@@ -54,16 +60,16 @@ def find_task(txt,data):
     
     
 
-# find_task(txt,data)
+find_task(txt,data)
 
 # print(tasks)
-
-t1 = threading.Thread(target=find_task, args=(txt,data,))
+# if __name__ =='__main__':
+# t1 = threading.Thread(target=find_task, args=(txt,data,))
 # t2 = threading.Thread(target=find_task,args=(txt,data,))
 
-t1.start()
-time.sleep(0.5)
+# t1.start()
+# time.sleep(0.5)
 # t2.start()
 
-t1.join()
+# t1.join()
 # t2.join()
