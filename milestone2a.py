@@ -6,10 +6,9 @@ import time
 import csv
 
 
-def TimeFunction(seconds):
-    time.sleep(seconds)
 
-def entry_log(k):
+
+def entryLog(k):
     with open("Milestone2a_log.txt", 'a') as write_log:
         t = datetime.datetime.now()
         write_log.write(str(t) + ";" + str(k))
@@ -33,7 +32,7 @@ tasks = []
 dict = {}
 
 def find_task(txt,data):
-    entry_log(txt + " Entry ")
+    entryLog(txt + " Entry ")
     if data['Type'] == 'Flow':
         execution = data['Execution']
         activities = data['Activities']
@@ -53,20 +52,27 @@ def find_task(txt,data):
         func = data['Function']
         if "Condition" in data:
             cond = data['Condition'].split(' ')
-            key = cond[0]
+            k = cond[0]
             val = cond[2]
-            if cond[1] == '<' and int(dict[key]) >= int(val):
-                entry_log(txt+" Skipped")
+            
+            if cond[1] == '<' and int(dict[k]) >= int(val):
+                entryLog(txt+" Skipped")
+                return
+            elif cond[1]=='>' and int(dict[k])<=int(val):
+                entryLog(txt+" Skipped")
+                return
                 
-            elif cond[1]=='>' and int(dict[key])<=int(val):
-                entry_log(txt+" Skipped")
-                pass
+
             
         if func == "TimeFunction":
             finput = data['Inputs']['FunctionInput']
-            ftime = data['Inputs']['ExecutionTime']
-            entry_log(txt + " Executing " + str(func) + " (" + str(finput) + ", " + str(ftime) + ")")
-            TimeFunction(int(ftime))
+            exe_time = data['Inputs']['ExecutionTime']
+            # for key,val in dict.items():
+            #     print(key)
+            # print(val)
+            print(txt)
+            entryLog(txt + " Executing " + str(func) + " (" + str(finput) + ", " + str(exe_time) + ")")
+            time.sleep(int(exe_time))
         elif func == "DataLoad":
             fname = data['Inputs']['Filename']
             filepath = "DataSet/Milestone2/" + fname
@@ -77,8 +83,11 @@ def find_task(txt,data):
                     nofdefect += 1
                 key = "$(" + txt + ".NoOfDefects" + ")"
                 dict[key] = nofdefect
+                print(key)
+            entryLog(txt + " Executing " + str(func)+" ("+fname+")")
+            # time.sleep(int(exe_time))
         tasks.append(data)
-        entry_log(txt + " Exit")
+    entryLog(txt + " Exit")
 
 
 find_task(txt, data)
