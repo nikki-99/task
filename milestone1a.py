@@ -10,7 +10,7 @@ file = "DataSet/Milestone1/Milestone1A.yaml"
 
 
 def entryLog(k):
-    with open("Milestone1_log.txt", 'a') as write_log:
+    with open("Milestone1a_log.txt", 'a') as write_log:
         t = datetime.datetime.now()
         write_log.write(str(t) +";"+ str(k))
         write_log.write('\n')
@@ -36,34 +36,40 @@ def find_task(txt,data):
     if data['Type'] == 'Flow':
         execution = data['Execution']
         activities = data['Activities']
-        for k, v in activities.items():
-            if not v['Type']=='Task':
-                entryLog(txt + "." + k + " Entry ")
-                # entryLog(txt +  " Exit ")
-            
-            # if k.find('Task'):
-            find_task(txt +"."+k,v)
+        if execution == 'Sequential':
+            for k, v in activities.items():
+                find_task(txt + "." + k ,v)
+        elif execution == 'Concurrent':
+            thread_items = []
+            for k, v in activities.items():
+                t = threading.Thread(target=find_task, args=(txt + "." + k ,v,))
+                thread_items.append(t)
+            for t in thread_items:
+                t.start()
+            for t in thread_items:
+                t.join()
+        entryLog(txt + " Exit")
     elif data['Type'] == 'Task':
         func_name = data['Function']
-        func_input = data['Inputs']['FunctionInput']
+        finput = data['Inputs']['FunctionInput']
         exe_time = data['Inputs']['ExecutionTime']
-        entryLog(txt + " Executing " + str(func_name) + " ("+ str(func_input)+ ", "+str(exe_time)+")")
-        entryLog(txt +  " Exit ")
+        entryLog(txt + " Executing " + str(func_name) + " (" + str(finput) +", "+ str(exe_time) + ") ")
         tasks.append(data)
+        entryLog(txt + " Exit")
     
     
     
 
-# find_task(txt,data)
+find_task(txt,data)
 
 # print(tasks)
 
-t1 = threading.Thread(target=find_task, args=(txt,data,))
+# t1 = threading.Thread(target=find_task, args=(txt,data,))
 # t2 = threading.Thread(target=find_task,args=(txt,data,))
 
-t1.start()
-time.sleep(0.5)
+# t1.start()
+# time.sleep(0.5)
 # t2.start()
 
-t1.join()
+# t1.join()
 # t2.join()
