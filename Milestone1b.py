@@ -54,6 +54,7 @@ def find_task(txt,data):
         func_input = data['Inputs']['FunctionInput']
         exe_time = data['Inputs']['ExecutionTime']
         entryLog(txt + " Executing " + str(func_name) + " ("+ str(func_input)+ ", "+str(exe_time)+")")
+        time.sleep(int(exe_time))
         entryLog(txt +  " Exit ")
         tasks.append(data)
     
