@@ -29,6 +29,12 @@ data = data['M1A_Workflow']
 
 txt = "M1A_Workflow"
 
+# txt="" 
+
+# for key,val in data.items():
+#     data = val
+#     txt+=key
+
 tasks = []
 
 def find_task(txt,data):
@@ -40,14 +46,14 @@ def find_task(txt,data):
             for k, v in activities.items():
                 find_task(txt + "." + k ,v)
         elif execution == 'Concurrent':
-            thread_items = []
+            threads = []
             for k, v in activities.items():
                 t = threading.Thread(target=find_task, args=(txt + "." + k ,v,))
-                thread_items.append(t)
-            for t in thread_items:
+                threads.append(t)
+            for t in threads:
                 t.start()
                 # time.sleep()
-            for t in thread_items:
+            for t in threads:
                 t.join()
         entryLog(txt + " Exit")
     elif data['Type'] == 'Task':

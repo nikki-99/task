@@ -71,6 +71,7 @@ def find_task(txt,data):
                 # threading.Lock().release()
             for t in threads:
                 t.join()
+        entryLog(txt + " Exit")
     elif data['Type'] == 'Task':
         func = data['Function']
         if func == "TimeFunction":
@@ -94,7 +95,7 @@ def find_task(txt,data):
                 dt[key] = noOfdefect
                 print(key, noOfdefect)
         tasks.append(data)
-    entryLog(txt + " Exit")
+        entryLog(txt + " Exit")
 
 
 find_task(txt, data)
